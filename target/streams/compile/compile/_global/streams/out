@@ -1,0 +1,9 @@
+[0m[[0m[31merror[0m] [0m[0m/Users/AlexDronov/Desktop/MSc Data Science/PDSS/CW2/src/main/scala/ImdbSpark.scala:76:17: type mismatch;[0m
+[0m[[0m[31merror[0m] [0m[0m found   : (List[String], Int)[0m
+[0m[[0m[31merror[0m] [0m[0m required: TraversableOnce[?][0m
+[0m[[0m[31merror[0m] [0m[0m    .flatMap{x=>(x,1)}[0m
+[0m[[0m[31merror[0m] [0m[0m                ^[0m
+[0m[[0m[31merror[0m] [0m[0m/Users/AlexDronov/Desktop/MSc Data Science/PDSS/CW2/src/main/scala/ImdbSpark.scala:78:30: value foreach is not a member of Array[Nothing][0m
+[0m[[0m[31merror[0m] [0m[0m    decade_nineties.take(10).foreach(println)[0m
+[0m[[0m[31merror[0m] [0m[0m                             ^[0m
+[0m[[0m[31merror[0m] [0m[0mtwo errors found[0m

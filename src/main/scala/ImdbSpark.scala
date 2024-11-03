@@ -33,14 +33,14 @@ object ImdbSpark {
     val durations = timed("Task 1", task1(titleBasicsRDD).collect().toList)
     println(durations)
 
-    val titles = timed("Task 2", task2(titleBasicsRDD, titleRatingsRDD).collect().toList)
-    println(titles)
+    // val titles = timed("Task 2", task2(titleBasicsRDD, titleRatingsRDD).collect().toList)
+    // println(titles)
 
-    val topRated = timed("Task 3", task3(titleBasicsRDD, titleRatingsRDD, titleCrewRDD).collect().toList)
-    println(topRated)
+    // val topRated = timed("Task 3", task3(titleBasicsRDD, titleRatingsRDD, titleCrewRDD).collect().toList)
+    // println(topRated)
 
-    val crews = timed("Task 4", task4(titleBasicsRDD, nameBasicsRDD, titleCrewRDD).collect().toList)
-    println(crews)
+    // val crews = timed("Task 4", task4(titleBasicsRDD, nameBasicsRDD, titleCrewRDD).collect().toList)
+    // println(crews)
 
     sc.stop()
   }
@@ -59,7 +59,40 @@ object ImdbSpark {
     // TODO: Implement this task
     // Expected output example:
     // List((Drama,3504), (Documentary,2883), (Comedy,2439), (Horror,909), (Thriller,854))
-    ???
+    // 1. filter out the movies, tvseries, and years 1990-2000 => put in a seperate val 
+    // 2. filter out the movies, tvseries, and years 2000-2020 => put in a seperate val
+    //    obtain val decade1, val decade2 = TitleBasics(Some(List(genres)))
+    // 3. flatten the lists of genres
+    // 4. reduce by key
+    // 5. subtract the results, sort in descending order, select the first 5
+    val decade_nineties = rdd
+    .filter{
+      title => (title.titleType.getOrElse("NA") == "movie" || title.titleType.getOrElse("NA") == "tvSeries") && 
+      (title.startYear.getOrElse(-1) >= 1990 && title.startYear.getOrElse(-1) <= 2000)
+    }
+    .collect{
+      case TitleBasics(_, _, _, _, _, _, _, _, Some(genres)) => (genres)
+    }
+    .flatMap{x=>x}
+    .map(x => (x, 1))
+    .reduceByKey((genre, count) => genre + count)
+
+    val decade_10s = rdd
+    .filter{
+      title => (title.titleType.getOrElse("NA") == "movie" || title.titleType.getOrElse("NA") == "tvSeries") && 
+      (title.startYear.getOrElse(-1) >= 2010 && title.startYear.getOrElse(-1) <= 2020)
+    }
+    .collect{
+      case TitleBasics(_, Some(mtype), Some(mtitle), _, _, Some(syear), _, _, Some(genres)) => (mtype, mtitle, syear, genres)
+    }
+    .flatMap{x=>x}
+    .map(x => (x, 1))
+    .reduceByKey((genre, count) => genre + count)
+
+
+    val data = Array(("a", 1))
+    val test = sc.parallelize(data)
+    return test
   }
 
   /**
@@ -71,12 +104,12 @@ object ImdbSpark {
    *         - Int is the decade (e.g., 1990)
    *         - List contains tuples of (genre_name, weighted_average_rating)
    */
-  def task2(l1: RDD[TitleBasics], l2: RDD[TitleRatings]): RDD[(Int, List[(String, Float)])] = {
-    // TODO: Implement this task
-    // Expected output format example for one decade:
-    // (1990, List((History,8.594199), (Biography,8.496143), (Drama,8.360406)))
-    ???
-  }
+  // def task2(l1: RDD[TitleBasics], l2: RDD[TitleRatings]): RDD[(Int, List[(String, Float)])] = {
+  //   // TODO: Implement this task
+  //   // Expected output format example for one decade:
+  //   // (1990, List((History,8.594199), (Biography,8.496143), (Drama,8.360406)))
+  //   ???
+  // }
 
   /**
    * Task 3: Top Directors
@@ -87,12 +120,12 @@ object ImdbSpark {
    *         - String is the director's name
    *         - Float is their average rating
    */
-  def task3(l1: RDD[TitleBasics], l2: RDD[TitleRatings], l3: RDD[TitleCrew]): RDD[(String, Float)] = {
-    // TODO: Implement this task
-    // Expected output example:
-    // List((Tetsurô Araki,9.2), (Matt Shakman,9.066667))
-    ???
-  }
+  // def task3(l1: RDD[TitleBasics], l2: RDD[TitleRatings], l3: RDD[TitleCrew]): RDD[(String, Float)] = {
+  //   // TODO: Implement this task
+  //   // Expected output example:
+  //   // List((Tetsurô Araki,9.2), (Matt Shakman,9.066667))
+  //   ???
+  // }
 
   /**
    * Task 4: Prolific Crew Members
@@ -103,12 +136,12 @@ object ImdbSpark {
    *         - String is the crew member's name
    *         - Int is their total number of unique contributions
    */
-  def task4(l1: RDD[TitleBasics], l2: RDD[NameBasics], l3: RDD[TitleCrew]): RDD[(String, Int)] = {
-    // TODO: Implement this task
-    // Expected output example:
-    // List((Marco Romano,12), (Jordan Hill,12), ..., (Tony Newton,8))
-    ???
-  }
+  // def task4(l1: RDD[TitleBasics], l2: RDD[NameBasics], l3: RDD[TitleCrew]): RDD[(String, Int)] = {
+  //   // TODO: Implement this task
+  //   // Expected output example:
+  //   // List((Marco Romano,12), (Jordan Hill,12), ..., (Tony Newton,8))
+  //   ???
+  // }
 
   def timed[T](label: String, code: => T): T = {
     val start = System.currentTimeMillis()
