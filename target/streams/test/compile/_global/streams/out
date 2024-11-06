@@ -1,0 +1,7 @@
+[0m[[0m[31merror[0m] [0m[0m/Users/AlexDronov/Desktop/MSc Data Science/PDSS/CW2/src/test/scala/imdb/ImdbSparkTest.scala:154:28: value task3 is not a member of object imdb.ImdbSpark[0m
+[0m[[0m[31merror[0m] [0m[0m    val result = ImdbSpark.task3(titleBasicsRDD, titleRatingsRDD, titleCrewRDD).collect().toList[0m
+[0m[[0m[31merror[0m] [0m[0m                           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/Users/AlexDronov/Desktop/MSc Data Science/PDSS/CW2/src/test/scala/imdb/ImdbSparkTest.scala:204:28: value task4 is not a member of object imdb.ImdbSpark[0m
+[0m[[0m[31merror[0m] [0m[0m    val result = ImdbSpark.task4(titleBasicsRDD, nameBasicsRDD, titleCrewRDD).collect().toList[0m
+[0m[[0m[31merror[0m] [0m[0m                           ^[0m
+[0m[[0m[31merror[0m] [0m[0mtwo errors found[0m
