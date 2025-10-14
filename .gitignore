@@ -1,0 +1,24 @@
+# Scala/SBT build artifacts
+/target/
+/project/project/
+/project/target/
+
+# IDE-specific files & directories
+/.bsp/
+/.idea/
+/.metals/
+/.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Log files
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IMDB Data files
+# Adjust this path if your data is located elsewhere
+/src/main/resources/imdb/
