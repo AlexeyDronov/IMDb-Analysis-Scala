@@ -1,6 +1,0 @@
-[0m[[0m[0mdebug[0m] [0m[0mCopy resource mappings: [0m
-[0m[[0m[0mdebug[0m] [0m[0m	(/Users/AlexDronov/Desktop/MSc Data Science/PDSS/CW2/src/main/resources/log4j.properties,/Users/AlexDronov/Desktop/MSc Data Science/PDSS/CW2/target/scala-2.12/classes/log4j.properties)[0m
-[0m[[0m[0mdebug[0m] [0m[0m	(/Users/AlexDronov/Desktop/MSc Data Science/PDSS/CW2/src/main/resources/imdb/title.ratings.tsv,/Users/AlexDronov/Desktop/MSc Data Science/PDSS/CW2/target/scala-2.12/classes/imdb/title.ratings.tsv)[0m
-[0m[[0m[0mdebug[0m] [0m[0m	(/Users/AlexDronov/Desktop/MSc Data Science/PDSS/CW2/src/main/resources/imdb/name.basics.tsv,/Users/AlexDronov/Desktop/MSc Data Science/PDSS/CW2/target/scala-2.12/classes/imdb/name.basics.tsv)[0m
-[0m[[0m[0mdebug[0m] [0m[0m	(/Users/AlexDronov/Desktop/MSc Data Science/PDSS/CW2/src/main/resources/imdb/title.basics.tsv,/Users/AlexDronov/Desktop/MSc Data Science/PDSS/CW2/target/scala-2.12/classes/imdb/title.basics.tsv)[0m
-[0m[[0m[0mdebug[0m] [0m[0m	(/Users/AlexDronov/Desktop/MSc Data Science/PDSS/CW2/src/main/resources/imdb/title.crew.tsv,/Users/AlexDronov/Desktop/MSc Data Science/PDSS/CW2/target/scala-2.12/classes/imdb/title.crew.tsv)[0m

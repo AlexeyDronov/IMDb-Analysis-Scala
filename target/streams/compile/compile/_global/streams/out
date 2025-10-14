@@ -1,6 +1,0 @@
-[0m[[0m[31merror[0m] [0m[0m/Users/AlexDronov/Desktop/MSc Data Science/PDSS/CW2/src/main/scala/ImdbSpark.scala:145:12: type mismatch;[0m
-[0m[[0m[31merror[0m] [0m[0m found   : org.apache.spark.rdd.RDD[(Int, List[(String, Double)])][0m
-[0m[[0m[31merror[0m] [0m[0m required: org.apache.spark.rdd.RDD[(Int, List[(String, Float)])][0m
-[0m[[0m[31merror[0m] [0m[0m    return genreRatingsByDecade[0m
-[0m[[0m[31merror[0m] [0m[0m           ^[0m
-[0m[[0m[31merror[0m] [0m[0mone error found[0m
