@@ -20,5 +20,5 @@ connectInput := true  // Connect stdin
 
 javaOptions ++= Seq(
   "-Xms4G",
-  "-Xmx8G"
+  "-Xmx16G"
 )

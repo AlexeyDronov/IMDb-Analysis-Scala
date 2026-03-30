@@ -20,5 +20,12 @@
 Thumbs.db
 
 # IMDB Data files
-# Adjust this path if your data is located elsewhere
 /src/main/resources/imdb/
+/src/main/resources/imdb_subset
+
+# Python / PySpark
+/python/venv/
+/python/.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/

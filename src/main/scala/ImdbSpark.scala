@@ -14,15 +14,19 @@ object ImdbSpark {
   val sc: SparkContext = new SparkContext(conf)
 
   val titleBasicsRDD: RDD[TitleBasics] = sc.textFile(ImdbData.titleBasicsPath)
+    .filter(line => !line.startsWith("tconst"))
     .map(line => ImdbData.parseTitleBasics(line))
 
   val titleRatingsRDD: RDD[TitleRatings] = sc.textFile(ImdbData.titleRatingsPath)
+    .filter(line => !line.startsWith("tconst"))
     .map(line => ImdbData.parseTitleRatings(line))
 
   val titleCrewRDD: RDD[TitleCrew] = sc.textFile(ImdbData.titleCrewPath)
+    .filter(line => !line.startsWith("tconst"))
     .map(line => ImdbData.parseTitleCrew(line))
 
   val nameBasicsRDD: RDD[NameBasics] = sc.textFile(ImdbData.nameBasicsPath)
+    .filter(line => !line.startsWith("nconst"))
     .map(line => ImdbData.parseNameBasics(line))
 
   def main(args: Array[String]) {
@@ -42,6 +46,7 @@ object ImdbSpark {
     val crews = timed("Task 4", task4(titleBasicsRDD, nameBasicsRDD, titleCrewRDD).collect().toList)
     println(crews)
 
+    // scala.io.StdIn.readLine("Press Enter to exit and close the Spark UI...")
     sc.stop()
   }
 
@@ -56,9 +61,6 @@ object ImdbSpark {
    *         - Int is the growth in number of titles
    */
   def task1(rdd: RDD[TitleBasics]): RDD[(String, Int)] = {
-    // TODO: Implement this task
-    // Expected output example:
-    // List((Drama,3504), (Documentary,2883), (Comedy,2439), (Horror,909), (Thriller,854))
     val top5genres = rdd
     .filter { title => // filter movies and tvseries and correct year ranges
       (title.titleType.exists(title => title == "movie" || title == "tvSeries")) &&
@@ -96,9 +98,6 @@ object ImdbSpark {
    *         - List contains tuples of (genre_name, weighted_average_rating)
    */
   def task2(l1: RDD[TitleBasics], l2: RDD[TitleRatings]): RDD[(Int, List[(String, Float)])] = {
-    // TODO: Implement this task
-    // Expected output format example for one decade:
-    // (1990, List((History,8.594199), (Biography,8.496143), (Drama,8.360406)))
     val ratingMap = l2
     .map{ 
       case TitleRatings(titleId, avgRating, numVotes) => (titleId -> (numVotes, numVotes * avgRating))
@@ -152,9 +151,6 @@ object ImdbSpark {
    *         - Float is their average rating
    */
   def task3(l1: RDD[NameBasics], l2: RDD[TitleRatings], l3: RDD[TitleCrew]): RDD[(String, Float)] = {
-    // TODO: Implement this task
-    // Expected output example:
-    // List((Tetsurô Araki,9.2), (Matt Shakman,9.066667))
     val filtered_directors = l1
     .filter(crew => (crew.primaryName.isDefined))
     .map{ // obtain (crewId, primaryName)
@@ -204,10 +200,6 @@ object ImdbSpark {
    *         - Int is their total number of unique contributions
    */
   def task4(l1: RDD[TitleBasics], l2: RDD[NameBasics], l3: RDD[TitleCrew]): RDD[(String, Int)] = {
-    // TODO: Implement this task
-    // Expected output example:
-    // List((Marco Romano,12), (Jordan Hill,12), ..., (Tony Newton,8))
-    // l1: RDD[TitleBasics], l2: RDD[NameBasics], l3: RDD[TitleCrew]
     val titleBasicsFiltered = l1
         .filter{
           title => title.startYear.exists(year => (year >= 1995 && year <= 2000) || (year >= 2005 && year <= 2010) || 
