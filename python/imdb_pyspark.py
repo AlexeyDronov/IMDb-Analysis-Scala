@@ -67,7 +67,8 @@ def benchmark(tasks, trials: int, verbose: bool) -> None:
     run_once(tasks, verbose)
     
     times: dict[str, list[float]] = defaultdict(list)
-    for _ in range(trials):
+    for idx in range(trials):
+        print(f"Running Trial {idx + 1}")
         for name, fn in tasks:
             _, t = timed(fn)
             times[name].append(t)

@@ -9,6 +9,9 @@ object ImdbSpark {
   val conf: SparkConf = new SparkConf()
     .setAppName("ImdbAnalysis")
     .setMaster("local[*]")
+    .set("spark.driver.memory", "12g")
+    .set("spark.default.parallelism", "20")
+    .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
     .set("spark.ui.enabled", "false")
 
   val sc: SparkContext = new SparkContext(conf)
@@ -16,39 +19,105 @@ object ImdbSpark {
   val titleBasicsRDD: RDD[TitleBasics] = sc.textFile(ImdbData.titleBasicsPath)
     .filter(line => !line.startsWith("tconst"))
     .map(line => ImdbData.parseTitleBasics(line))
+    .cache()
 
   val titleRatingsRDD: RDD[TitleRatings] = sc.textFile(ImdbData.titleRatingsPath)
     .filter(line => !line.startsWith("tconst"))
     .map(line => ImdbData.parseTitleRatings(line))
+    .cache()
 
   val titleCrewRDD: RDD[TitleCrew] = sc.textFile(ImdbData.titleCrewPath)
     .filter(line => !line.startsWith("tconst"))
     .map(line => ImdbData.parseTitleCrew(line))
+    .cache()
 
   val nameBasicsRDD: RDD[NameBasics] = sc.textFile(ImdbData.nameBasicsPath)
     .filter(line => !line.startsWith("nconst"))
     .map(line => ImdbData.parseNameBasics(line))
+    .cache()
 
-  def main(args: Array[String]) {
+  // --- Statistics helpers --------------------------------------
+  def mean(xs: Seq[Double]): Double = xs.sum / xs.length
+
+  def median(xs: Seq[Double]): Double = {
+    val sorted = xs.sorted
+    if (xs.length % 2 == 1) sorted(xs.length / 2)
+    else (sorted(xs.length / 2 - 1) + sorted(xs.length / 2)) / 2.0
+  }
+
+  def stdev(xs: Seq[Double]): Double = {
+    val m = mean(xs)
+    math.sqrt(xs.map(x => math.pow(x - m, 2)).sum / xs.length)
+  }
+
+  // --- Timing helper ------------------------------------------
+  def timedTask[T](fn: => T): (T, Double) = {
+    val start = System.nanoTime()
+    val result = fn
+    val elapsedMs = (System.nanoTime() - start) / 1e6
+    (result, elapsedMs)
+  }
+
+  def main(args: Array[String]): Unit = {
     // Set log level
     org.apache.log4j.Logger.getLogger("org").setLevel(org.apache.log4j.Level.ERROR)
     org.apache.log4j.Logger.getLogger("akka").setLevel(org.apache.log4j.Level.ERROR)
 
-    val durations = timed("Task 1", task1(titleBasicsRDD).collect().toList)
-    println(durations)
+    // Parse CLI arguments for trials (defaults to 1)
+    val trials = if (args.length > 0) args(0).toInt else 1
+    val verbose = args.contains("-v") || args.contains("--verbose")
 
-    val titles = timed("Task 2", task2(titleBasicsRDD, titleRatingsRDD).collect().toList)
-    println(titles)
+    println("Materializing RDD caches...")
+    // Force cache materialization so disk I/O isn't counted in the first benchmark trial
+    titleBasicsRDD.count()
+    titleRatingsRDD.count()
+    titleCrewRDD.count()
+    nameBasicsRDD.count()
 
-    val topRated = timed("Task 3", task3(nameBasicsRDD, titleRatingsRDD, titleCrewRDD).collect().toList)
-    println(topRated)
+    // Define tasks as zero-argument functions to pass around easily.
+    // Notice we call .collect() here so the action is included in the timed block!
+    val tasks = Seq(
+      ("Task 1", () => task1(titleBasicsRDD).collect()),
+      ("Task 2", () => task2(titleBasicsRDD, titleRatingsRDD).collect()),
+      ("Task 3", () => task3(nameBasicsRDD, titleRatingsRDD, titleCrewRDD).collect()),
+      ("Task 4", () => task4(titleBasicsRDD, nameBasicsRDD, titleCrewRDD).collect())
+    )
 
-    val crews = timed("Task 4", task4(titleBasicsRDD, nameBasicsRDD, titleCrewRDD).collect().toList)
-    println(crews)
+    if (trials == 1) {
+      // Run Once Mode
+      tasks.foreach { case (name, fn) =>
+        val (result, duration) = timedTask(fn())
+        println(f"$name: $duration%.2f ms")
+        if (verbose) {
+          result.asInstanceOf[Array[_]].foreach(r => println(s"    $r"))
+          println("-" * 40)
+        }
+      }
+    } else {
+      // Benchmark Mode
+      println("Warming up...")
+      tasks.foreach { case (_, fn) => fn() }
 
+      val times = scala.collection.mutable.Map[String, List[Double]]().withDefaultValue(Nil)
+
+      for (i <- 1 to trials) {
+        println(s"Running trial $i...")
+        tasks.foreach { case (name, fn) =>
+          val (_, duration) = timedTask(fn())
+          times(name) = times(name) :+ duration
+        }
+      }
+
+      println("\nBenchmark results:")
+      tasks.map(_._1).foreach { name =>
+        val values = times(name)
+        println(f"$name: mean=${mean(values)}%.2f ms, median=${median(values)}%.2f ms, std=${stdev(values)}%.2f ms.")
+      }
+    }
     // scala.io.StdIn.readLine("Press Enter to exit and close the Spark UI...")
     sc.stop()
   }
+
 
   /**
    * Task 1: Genre Growth Analysis
