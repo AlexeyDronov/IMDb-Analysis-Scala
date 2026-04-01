@@ -1,0 +1,9 @@
+services:
+  imdb-analysis:
+    build: .
+    container_name: imdb-analysis
+    volumes:
+      - .:/app
+    working_dir: /app
+    tty: true
+    stdin_open: true

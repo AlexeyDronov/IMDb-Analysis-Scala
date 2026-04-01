@@ -96,7 +96,12 @@ object ImdbSpark {
     } else {
       // Benchmark Mode
       println("Warming up...")
-      tasks.foreach { case (_, fn) => fn() }
+      tasks.foreach {  case (_, fn) =>
+        val (result, duration) = timedTask(fn())
+        if (verbose) {
+          result.asInstanceOf[Array[_]].foreach(r => println(s"    $r"))
+        }
+      }
 
       val times = scala.collection.mutable.Map[String, List[Double]]().withDefaultValue(Nil)
 
