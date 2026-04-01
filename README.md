@@ -50,10 +50,10 @@ To ensure maximum performance and fair benchmarking across both implementations,
 
 ### Prerequisites
 
-- **Java**: Java 11
-- **Scala**: 2.12.15 (Managed via SBT)
-- **SBT**: 1.9.6
 - **Python**: 3.8
+- **Java**: Java 11
+- **SBT**: 1.9.6
+- **Scala**: 2.12.15 (Managed via SBT)
 - **Spark Version**: 3.0.3 (Defined in `build.sbt` and `requirements.txt`)
 
 ### 1. Environment Setup
@@ -96,10 +96,25 @@ pip install -r python/requirements.txt
 | **Total** | **2.28 GB** | **41,652,086** |
 
 ### 3. Running the Scripts
+> [!Important]
+> The script requires at least 12GB RAM. Can be configured in [`./build.sbt`](build.sbt#L23) and [`./python/imdb_pyspark.py`](python/imdb_pyspark.py#L91) for Scala/PySpark and in [`./docker-compose.yml`](docker-compose.yml#L9) for docker.
+
+**Docker**
+```bash
+# 1. Build the image
+docker compose build
+
+# 2. Place IMDb .tsv files in src/main/resources/imdb/ on the host
+
+# 3. Start the container (interactive)
+docker compose run --rm imdb-analysis
+```
+On startup you'll be prompted whether to run benchmarks and how many trials to use. After benchmarks complete (or if skipped), you'll drop into a bash shell where you can run scripts manually.
+
 **Scala RDD**
 ```bash
 sbt run                         # Single run 
-sbt "runMain imdb.ImdbSpark 10" # 10-trial benchmark
+sbt "runMain imdb.ImdbSpark 10 --verbose" # 10-trial benchmark
 ```
 
 **PySpark SQL**
