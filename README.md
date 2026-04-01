@@ -57,6 +57,9 @@ To ensure maximum performance and fair benchmarking across both implementations,
 - **Spark Version**: 3.0.3 (Defined in `build.sbt` and `requirements.txt`)
 
 ### 1. Environment Setup
+> [!Note]
+> Skip to the next step if using Docker.
+
 
 **Linux / macOS:**
 
