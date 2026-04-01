@@ -1,5 +1,9 @@
 FROM python:3.8
 
+LABEL maintainer="Alexey Dronov alexey.dronov@outlook.com" \
+      description="IMDb analysis: Scala RDD vs PySpark SQL benchmarking" \
+      version="1.0"
+
 # System dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
@@ -30,6 +34,9 @@ RUN mkdir -p /opt/sbt &&\
 
 
 WORKDIR /app
+COPY build.sbt ./
+COPY project/ ./project/
+RUN sbt update
 
 # Create venv and install PySpark
 COPY python/requirements.txt .
@@ -37,7 +44,7 @@ RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY benchmark.sh entrypoint.sh ./
-RUN chmod +x benchmark.sh entrypoint.sh
+COPY scripts/ ./scripts/
+RUN chmod +x scripts/benchmark.sh scripts/entrypoint.sh
 
-CMD ["bash", "./entrypoint.sh"]
+CMD ["bash", "./scripts/entrypoint.sh"]

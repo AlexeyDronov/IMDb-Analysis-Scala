@@ -6,3 +6,15 @@ __pycache__/
 data/
 *.csv
 *.parquet
+target/
+project/target/
+project/project/
+.bsp/
+.idea/
+.metals/
+.vscode/
+*.iml
+src/main/resources/imdb/
+src/main/resources/imdb_subset/
+python/venv/
+python/.venv/

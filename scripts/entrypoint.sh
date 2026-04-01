@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ ! -t 0 ]; then
+echo "Error: This container must be run with an interactive terminal (-it or tty: true)"
+exit 1
+fi
+
 echo "========================================="
 echo "  IMDb Analysis Container Ready!"
 echo "========================================="
@@ -12,7 +17,7 @@ if [[ "$REPLY" =~ ^[Yy] ]]; then
     TRIALS=${TRIALS:-1}
 
     echo "Running benchmarks with $TRIALS trial(s)..."
-    bash ./benchmark.sh "$TRIALS"
+    bash ./scripts/benchmark.sh "$TRIALS"
 else
     echo "Skipping benchmarks."
 fi

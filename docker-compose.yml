@@ -4,6 +4,7 @@ services:
     container_name: imdb-analysis
     volumes:
       - .:/app
-    working_dir: /app
     tty: true
     stdin_open: true
+    mem_limit: 14g
+    memswap_limit: 14g
