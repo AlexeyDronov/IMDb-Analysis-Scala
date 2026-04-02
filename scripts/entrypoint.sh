@@ -5,11 +5,37 @@ echo "Error: This container must be run with an interactive terminal (-it or tty
 exit 1
 fi
 
-echo "========================================="
-echo "  IMDb Analysis Container Ready!"
-echo "========================================="
+GREEN="\033[1;32m"
+CYAN="\033[1;36m"
+YELLOW="\033[1;33m"
+RESET="\033[0m"
 
-read -p "Run benchmarks? (y/n): " -r REPLY
+clear
+
+echo -e "${CYAN}"
+echo "========================================"
+echo "    ██╗███╗   ███╗██████╗ ██████╗ "
+echo "    ██║████╗ ████║██╔══██╗██╔══██╗"
+echo "    ██║██╔████╔██║██║  ██║██████╔╝"
+echo "    ██║██║╚██╔╝██║██║  ██║██╔══██╗"
+echo "    ██║██║ ╚═╝ ██║██████╔╝██████╔╝"
+echo "    ╚═╝╚═╝     ╚═╝╚═════╝ ╚═════╝ "
+echo ""
+echo "        IMDb Analysis Container"
+echo "========================================"
+echo -e "${RESET}"
+
+sleep 0.5
+
+echo -e "${GREEN}[✓] Environment ready${RESET}"
+echo -e "${GREEN}[✓] Scala + Spark loaded${RESET}"
+echo -e "${GREEN}[✓] Dataset mounted${RESET}"
+
+echo ""
+echo -ne "${YELLOW}>> Run benchmarks? (y/n): ${RESET}"
+read -r REPLY
+
+
 echo
 
 if [[ "$REPLY" =~ ^[Yy] ]]; then
