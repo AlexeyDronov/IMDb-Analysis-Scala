@@ -24,7 +24,7 @@ Applied RDD best practices including early filtering, `reduceByKey`, `HashPartit
 - Added a custom benchmarking suite, structured logging, and a head-to-head performance comparison between the RDD API and DataFrame APIs.
 - Preserved identical Spark configurations and business logic in both implementations
 
-The extension delivered a **76% average runtime reduction** (59s &rarr; 14s across 10 trials)
+The extension delivered a **75.7% average runtime reduction** (59s &rarr; 14s across 10 trials)
 
 
 ## Optimisations
